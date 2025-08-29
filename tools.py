@@ -1,12 +1,4 @@
-"""
-tools.py
---------
-Collection of FREE, no-auth tools for your LangGraph / MCP-style agent.
-Weather, FX conversion, crypto spot price, public holidays, and jokes.
 
-All tools are implemented with the @tool decorator so they can be bound
-directly to your LLM via `llm.bind_tools([...])`.
-"""
 from __future__ import annotations
 
 import os
@@ -30,11 +22,7 @@ def _get_json(url: str, params: Optional[Dict[str, Any]] = None) -> Any:
     except ValueError as e:
         raise ToolError(f"Bad JSON from {url}: {e}") from e
 
-# -------------------------------
-# Weather via Open-Meteo (free)  https://open-meteo.com/
-# Geocoding: https://geocoding-api.open-meteo.com/v1/search
-# Forecast:  https://api.open-meteo.com/v1/forecast
-# -------------------------------
+
 @tool
 def get_weather(location: str, days: int = 1) -> Dict[str, Any]:
     """
@@ -51,7 +39,7 @@ def get_weather(location: str, days: int = 1) -> Dict[str, Any]:
     if not location or not location.strip():
         raise ToolError("Please provide a non-empty location string.")
     days = max(1, min(int(days), 7))
-    # 1) Geocode
+   
     geo = _get_json(
         "https://geocoding-api.open-meteo.com/v1/search",
         {"name": location, "count": 1, "language": "en", "format": "json"},
@@ -94,10 +82,7 @@ def get_weather(location: str, days: int = 1) -> Dict[str, Any]:
         "daily": forecast.get("daily"),
     }
 
-# ------------------------------------------
-# Fiat FX via Frankfurter (ECB rates, free)  https://api.frankfurter.dev/v1
-# Docs: https://frankfurter.dev/
-# ------------------------------------------
+
 @tool
 def get_exchange_rate(base: str, target: str, amount: float = 1.0) -> Dict[str, Any]:
     """
@@ -117,7 +102,7 @@ def get_exchange_rate(base: str, target: str, amount: float = 1.0) -> Dict[str, 
     target = target.upper().strip()
     amount = float(amount)
 
-    # Get latest rate for base -> target
+
     data = _get_json(
         "https://api.frankfurter.dev/v1/latest",
         {"base": base, "symbols": target},
@@ -138,9 +123,7 @@ def get_exchange_rate(base: str, target: str, amount: float = 1.0) -> Dict[str, 
     }
 
 # --------------------------------------
-# Crypto prices via Coinbase (no auth)  https://api.coinbase.com/
-# Docs: https://docs.cdp.coinbase.com/coinbase-app/track-apis/prices
-# --------------------------------------
+
 @tool
 def get_crypto_spot_price(symbol: str, currency: str = "USD") -> Dict[str, Any]:
     """
@@ -168,10 +151,7 @@ def get_crypto_spot_price(symbol: str, currency: str = "USD") -> Dict[str, Any]:
         "source": "Coinbase",
     }
 
-# ---------------------------------------------------
-# Public Holidays via Nager.Date (free)  https://date.nager.at/
-# Example: https://date.nager.at/api/v3/PublicHolidays/2025/IN
-# ---------------------------------------------------
+
 @tool
 def get_public_holidays(year: int, country_code: str) -> List[Dict[str, Any]]:
     """
@@ -200,9 +180,7 @@ def get_public_holidays(year: int, country_code: str) -> List[Dict[str, Any]]:
         })
     return holidays
 
-# ------------------
-# Jokes (free, no key)  https://v2.jokeapi.dev/
-# ------------------
+
 @tool
 def get_joke(category: str = "Programming", safe_mode: bool = True) -> Dict[str, Any]:
     """
@@ -227,9 +205,7 @@ def get_joke(category: str = "Programming", safe_mode: bool = True) -> Dict[str,
     return {"type": "twopart", "setup": data.get("setup"), "delivery": data.get("delivery"),
             "category": data.get("category")}
 
-# ------------------------------------
-# Optional: Stock price via AlphaVantage (requires API key)
-# ------------------------------------
+
 @tool
 def get_stock_price(symbol: str) -> Dict[str, Any]:
     """
