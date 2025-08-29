@@ -1,5 +1,6 @@
 🤖 Chatbot Agentic with LangGraph + FastAPI + Streamlit
-![Uploading image.png…]()
+<img width="1907" height="1072" alt="image" src="https://github.com/user-attachments/assets/8fdce880-abec-4918-9ac0-4dd8f29c148f" />
+
 
 An Agentic AI Chatbot powered by LangGraph, Groq LLM, and a suite of free tools.
 It supports multi-turn conversations, tool usage tracking, and a clean chat UI built with Streamlit.
